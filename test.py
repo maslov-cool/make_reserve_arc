@@ -20,16 +20,19 @@ def make_reserve_arc(source, dest):
     with ZipFile(archive_path, 'w') as myzip:
         # Рекурсивный обход директории
         for foldername, subfolders, filenames in os.walk(source):
+            # Добавляем пустые папки
+            for subfolder in subfolders:
+                full_folder_path = os.path.join(foldername, subfolder)
+                arcname = os.path.relpath(full_folder_path, start=source)
+                myzip.write(full_folder_path, arcname)
+            
+            # Добавляем файлы
             for filename in filenames:
-                # Полный путь к файлу
                 file_path = os.path.join(foldername, filename)
-                # Относительный путь для архива
                 arcname = os.path.relpath(file_path, start=source)
-                # Добавление файла в архив
                 myzip.write(file_path, arcname)
 
     print(f"Архив успешно создан: {archive_path}")
-
 
 # Пример использования
 make_reserve_arc(input('Введите путь к каталогу, который надо архивировать: '),
